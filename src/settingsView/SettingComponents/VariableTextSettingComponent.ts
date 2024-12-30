@@ -15,6 +15,7 @@ export class VariableTextSettingComponent extends AbstractSettingComponent {
 	setting: VariableText;
 
 	render(): void {
+		if (!this.containerEl) return;
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 

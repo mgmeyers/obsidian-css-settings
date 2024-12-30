@@ -9,6 +9,7 @@ export class InfoTextSettingComponent extends AbstractSettingComponent {
 	setting: InfoText;
 
 	render(): void {
+		if (!this.containerEl) return;
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 

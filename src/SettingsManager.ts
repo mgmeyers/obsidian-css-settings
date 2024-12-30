@@ -268,24 +268,26 @@ function getCSSVariables(
 				const color =
 					value !== undefined ? value.toString() : colorSetting.default;
 
-				vars.push(
-					...generateColorVariables(
-						setting.id,
-						colorSetting.format,
-						color,
-						colorSetting.opacity,
-						colorSetting['alt-format']
-					)
-				);
+				if (color) {
+					vars.push(
+						...generateColorVariables(
+							setting.id,
+							colorSetting.format,
+							color,
+							colorSetting.opacity,
+							colorSetting['alt-format']
+						)
+					);
 
-				generateColorVariables(
-					setting.id,
-					'rgb',
-					color,
-					colorSetting.opacity
-				).forEach((kv) => {
-					gradientCandidates[kv.key] = kv.value;
-				});
+					generateColorVariables(
+						setting.id,
+						'rgb',
+						color,
+						colorSetting.opacity
+					).forEach((kv) => {
+						gradientCandidates[kv.key] = kv.value;
+					});
+				}
 
 				continue;
 			}

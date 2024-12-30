@@ -191,6 +191,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 	resultsEl: HTMLElement;
 
 	render(): void {
+		if (!this.containerEl) return;
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 
@@ -226,13 +227,13 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		this.childEl = this.containerEl.createDiv({
 			cls: 'style-settings-container',
 		});
-		this.setCollapsed(this.setting.collapsed);
+		this.setCollapsed(!!this.setting.collapsed);
 	}
 
 	destroy(): void {
 		this.removeChildren();
 		this.settingEl?.settingEl.remove();
-		this.childEl.remove();
+		this.childEl?.remove();
 	}
 
 	filter(filterString: string): number {
@@ -318,11 +319,12 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 	}
 
 	private addResetButton() {
-		if (this.setting.resetFn) {
+		const { resetFn } = this.setting;
+		if (resetFn) {
 			this.settingEl.addExtraButton((b) => {
 				b.setIcon('reset')
 					.setTooltip('Reset all settings to default')
-					.onClick(this.setting.resetFn);
+					.onClick(resetFn);
 			});
 		}
 	}
@@ -347,7 +349,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		});
 	}
 
-	addSettingChild(child: CSSSetting): AbstractSettingComponent {
+	addSettingChild(child: CSSSetting): AbstractSettingComponent | undefined {
 		const newSettingComponent = createSettingComponent(
 			this,
 			this.sectionId,

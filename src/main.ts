@@ -110,6 +110,7 @@ export default class CSSSettingsPlugin extends Plugin {
 
 			for (let i = 0, len = styleSheets.length; i < len; i++) {
 				const sheet = styleSheets.item(i);
+				if (!sheet) continue;
 				this.parseCSSStyleSheet(sheet);
 			}
 
@@ -190,14 +191,17 @@ export default class CSSSettingsPlugin extends Plugin {
 	 * @private
 	 */
 	private parseCSSStyleSheet(sheet: CSSStyleSheet): void {
-		const text: string = sheet.ownerNode.textContent.trim();
+		const text = sheet?.ownerNode?.textContent?.trim();
+		if (!text) return;
 
-		let match: RegExpExecArray = settingRegExp.exec(text);
+		let match = settingRegExp.exec(text);
 
-		if (match && match.length) {
+		if (match?.length) {
 			do {
-				const nameMatch: RegExpMatchArray = text.match(nameRegExp);
-				const name: string | undefined = nameMatch ? nameMatch[1] : undefined;
+				const nameMatch = text.match(nameRegExp);
+				if (!nameMatch) continue;
+
+				const name = nameMatch[1];
 
 				try {
 					const str = match[1].trim();
@@ -285,9 +289,6 @@ export default class CSSSettingsPlugin extends Plugin {
 	onunload() {
 		this.lightEl.remove();
 		this.darkEl.remove();
-
-		this.lightEl = null;
-		this.darkEl = null;
 
 		document.body.classList.remove('css-settings-manager');
 

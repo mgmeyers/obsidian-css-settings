@@ -5,7 +5,7 @@ import {
 	buildSettingComponentTree,
 	HeadingSettingComponent,
 } from './SettingComponents/HeadingSettingComponent';
-import { App, Component, SearchComponent, Setting, debounce } from 'obsidian';
+import { App, Component, Setting, debounce } from 'obsidian';
 
 export class SettingsMarkup extends Component {
 	app: App;
@@ -154,29 +154,28 @@ export class SettingsMarkup extends Component {
 			);
 
 			// Searchbar
-			let searchComponent: SearchComponent;
-			setting.addSearch((s) => {
-				searchComponent = s;
+			setting.addSearch((searchComponent) => {
+				searchComponent.setValue(this.filterString);
+				searchComponent.onChange(
+					debounce(
+						(value) => {
+							this.filterString = value;
+							if (value) {
+								this.filter();
+							} else {
+								this.clearFilter();
+							}
+						},
+						250,
+						true
+					)
+				);
+				searchComponent.setPlaceholder('Search Style Settings...');
+				// move the search component from the back to the front
+				if (setting.controlEl.lastChild) {
+					setting.nameEl.appendChild(setting.controlEl.lastChild);
+				}
 			});
-			// move the search component from the back to the front
-			setting.nameEl.appendChild(setting.controlEl.lastChild);
-
-			searchComponent.setValue(this.filterString);
-			searchComponent.onChange(
-				debounce(
-					(value) => {
-						this.filterString = value;
-						if (value) {
-							this.filter();
-						} else {
-							this.clearFilter();
-						}
-					},
-					250,
-					true
-				)
-			);
-			searchComponent.setPlaceholder('Search Style Settings...');
 		});
 
 		this.settingsContainerEl = containerEl.createDiv();

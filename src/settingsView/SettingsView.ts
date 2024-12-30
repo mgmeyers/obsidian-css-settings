@@ -7,7 +7,7 @@ import { ErrorList } from 'src/Utils';
 export const viewType = 'style-settings';
 
 export class SettingsView extends ItemView {
-	settingsMarkup: SettingsMarkup;
+	settingsMarkup: SettingsMarkup | null;
 	plugin: CSSSettingsPlugin;
 
 	constructor(plugin: CSSSettingsPlugin, leaf: WorkspaceLeaf) {

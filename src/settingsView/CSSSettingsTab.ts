@@ -5,7 +5,7 @@ import { ParsedCSSSettings } from 'src/SettingHandlers';
 import { ErrorList } from 'src/Utils';
 
 export class CSSSettingsTab extends PluginSettingTab {
-	settingsMarkup: SettingsMarkup;
+	settingsMarkup: SettingsMarkup | null;
 	plugin: CSSSettingsPlugin;
 	settings: ParsedCSSSettings[];
 	errorList: ErrorList;
@@ -37,7 +37,9 @@ export class CSSSettingsTab extends PluginSettingTab {
 	}
 
 	hide(): void {
-		this.plugin.removeChild(this.settingsMarkup);
+		if (this.settingsMarkup) {
+			this.plugin.removeChild(this.settingsMarkup);
+		}
 		this.settingsMarkup = null;
 	}
 }

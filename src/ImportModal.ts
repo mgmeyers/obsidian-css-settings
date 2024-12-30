@@ -74,13 +74,19 @@ export class ImportModal extends Modal {
 				(importInput) => {
 					// Set up a FileReader so we can parse the file contents
 					importInput.addEventListener('change', (e) => {
+						if (!e.target) return;
+
 						const reader = new FileReader();
 
 						reader.onload = async (e: ProgressEvent<FileReader>) => {
+							if (!e.target?.result) return;
 							await importAndClose(e.target.result.toString().trim());
 						};
 
-						reader.readAsText((e.target as HTMLInputElement).files[0]);
+						const target = e.target as HTMLInputElement;
+						if (target.files) {
+							reader.readAsText(target.files[0]);
+						}
 					});
 				}
 			);

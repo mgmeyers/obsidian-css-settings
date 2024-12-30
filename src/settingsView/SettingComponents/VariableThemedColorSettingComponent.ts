@@ -14,10 +14,11 @@ import { ButtonComponent, Setting } from 'obsidian';
 export class VariableThemedColorSettingComponent extends AbstractSettingComponent {
 	settingEl: Setting;
 	setting: VariableThemedColor;
-	pickrLight: Pickr;
-	pickrDark: Pickr;
+	pickrLight: Pickr | null;
+	pickrDark: Pickr | null;
 
 	render(): void {
+		if (!this.containerEl) return;
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 
@@ -97,7 +98,7 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 			wrapper,
 			this.containerEl,
 			swatchesLight,
-			valueLight,
+			valueLight || '',
 			idLight
 		);
 
@@ -106,7 +107,7 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 			wrapper,
 			this.containerEl,
 			swatchesDark,
-			valueDark,
+			valueDark || '',
 			idDark
 		);
 
@@ -116,8 +117,8 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 	destroy(): void {
 		this.pickrLight?.destroyAndRemove();
 		this.pickrDark?.destroyAndRemove();
-		this.pickrLight = undefined;
-		this.pickrDark = undefined;
+		this.pickrLight = null;
+		this.pickrDark = null;
 		this.settingEl?.settingEl.remove();
 	}
 
@@ -137,7 +138,7 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 				: this.setting['default-light'];
 		themeLightWrapper.style.setProperty('--pcr-color', defaultColor);
 
-		this.pickrLight = Pickr.create(
+		const pickrLight = (this.pickrLight = Pickr.create(
 			getPickrSettings({
 				isView: this.isView,
 				el: themeLightWrapper.createDiv({ cls: 'picker' }),
@@ -146,27 +147,27 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
 			})
-		);
+		));
 
-		this.pickrLight.on('show', () => {
-			const { result } = (this.pickrLight.getRoot() as any).interaction;
+		pickrLight.on('show', () => {
+			const { result } = (pickrLight.getRoot() as any).interaction;
 			activeWindow.requestAnimationFrame(() =>
 				activeWindow.requestAnimationFrame(() => result.select())
 			);
 		});
 
-		this.pickrLight.on('save', (color: Pickr.HSVaColor, instance: Pickr) =>
+		pickrLight.on('save', (color: Pickr.HSVaColor, instance: Pickr) =>
 			this.onSave(idLight, color, instance)
 		);
 
-		this.pickrLight.on('cancel', onPickrCancel);
+		pickrLight.on('cancel', onPickrCancel);
 
 		const themeLightReset = new ButtonComponent(
 			themeLightWrapper.createDiv({ cls: 'pickr-reset' })
 		);
 		themeLightReset.setIcon('reset');
 		themeLightReset.onClick(() => {
-			this.pickrLight.setColor(this.setting['default-light']);
+			pickrLight.setColor(this.setting['default-light']);
 			this.settingsManager.clearSetting(this.sectionId, idLight);
 		});
 		themeLightReset.setTooltip(resetTooltip);
@@ -188,7 +189,7 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 				: this.setting['default-dark'];
 		themeDarkWrapper.style.setProperty('--pcr-color', defaultColor);
 
-		this.pickrDark = Pickr.create(
+		const pickrDark = (this.pickrDark = Pickr.create(
 			getPickrSettings({
 				isView: this.isView,
 				el: themeDarkWrapper.createDiv({ cls: 'picker' }),
@@ -197,27 +198,27 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
 			})
-		);
+		));
 
-		this.pickrDark.on('show', () => {
-			const { result } = (this.pickrDark.getRoot() as any).interaction;
+		pickrDark.on('show', () => {
+			const { result } = (pickrDark.getRoot() as any).interaction;
 			activeWindow.requestAnimationFrame(() =>
 				activeWindow.requestAnimationFrame(() => result.select())
 			);
 		});
 
-		this.pickrDark.on('save', (color: Pickr.HSVaColor, instance: Pickr) =>
+		pickrDark.on('save', (color: Pickr.HSVaColor, instance: Pickr) =>
 			this.onSave(idDark, color, instance)
 		);
 
-		this.pickrDark.on('cancel', onPickrCancel);
+		pickrDark.on('cancel', onPickrCancel);
 
 		const themeDarkReset = new ButtonComponent(
 			themeDarkWrapper.createDiv({ cls: 'pickr-reset' })
 		);
 		themeDarkReset.setIcon('reset');
 		themeDarkReset.onClick(() => {
-			this.pickrDark.setColor(this.setting['default-dark']);
+			pickrDark.setColor(this.setting['default-dark']);
 			this.settingsManager.clearSetting(this.sectionId, idDark);
 		});
 		themeDarkReset.setTooltip(resetTooltip);

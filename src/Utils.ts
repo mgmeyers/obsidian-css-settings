@@ -14,7 +14,7 @@ export function getTitle<T extends Meta>(config: T): string {
 	return config.title;
 }
 
-export function getDescription<T extends Meta>(config: T): string {
+export function getDescription<T extends Meta>(config: T): string | undefined {
 	if (lang) {
 		return (
 			config[`description.${lang}` as keyof WithDescription] ||

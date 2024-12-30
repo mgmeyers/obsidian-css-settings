@@ -14,6 +14,7 @@ export class VariableSelectSettingComponent extends AbstractSettingComponent {
 	setting: VariableSelect;
 
 	render(): void {
+		if (!this.containerEl) return;
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 

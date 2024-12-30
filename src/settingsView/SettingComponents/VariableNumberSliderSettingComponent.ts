@@ -10,6 +10,7 @@ export class VariableNumberSliderSettingComponent extends AbstractSettingCompone
 	setting: VariableNumberSlider;
 
 	render(): void {
+		if (!this.containerEl) return;
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 

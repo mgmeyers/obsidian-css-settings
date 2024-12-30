@@ -10,6 +10,7 @@ export class VariableNumberSettingComponent extends AbstractSettingComponent {
 	setting: VariableNumber;
 
 	render(): void {
+		if (!this.containerEl) return;
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 

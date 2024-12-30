@@ -23,7 +23,7 @@ import { uk } from './locale/uk';
 import { zh } from './locale/zh';
 import { zhTw } from './locale/zhTw';
 
-export const lang: string = window.localStorage.getItem('language');
+export const lang: string | null = window.localStorage.getItem('language');
 
 const localeMap: { [k: string]: Partial<typeof en> } = {
 	ar,
